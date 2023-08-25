@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { store } from '../redux/store'
 
-export const instance = axios.create()
+export const instance = axios.create({
+  baseURL: process.env.REACT_APP_API,
+})
 
 instance.interceptors.response.use(
   function (response) {
