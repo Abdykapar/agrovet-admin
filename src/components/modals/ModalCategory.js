@@ -35,7 +35,7 @@ export default function ModalCategory({
       const fm = new FormData()
       fm.append('title', item.title)
       fm.append('image', item.file)
-      fm.append('parent', item.parent)
+      fm.append('parent', item.parent || '')
 
       if (isEdit) await categoriesService.update(fm, data._id)
       else await categoriesService.create(fm)
