@@ -1,6 +1,18 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { setToken, setUser } from '../../redux/authReducer'
 
 export default function Header() {
+  const user = useSelector((s) => s.auth.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const onSignOut = () => {
+    dispatch(setToken(null))
+    dispatch(setUser(null))
+    navigate('/login')
+  }
   return (
     <header id='header' className='header fixed-top d-flex align-items-center'>
       <div className='d-flex align-items-center justify-content-between'>
@@ -213,13 +225,13 @@ export default function Header() {
                 className='rounded-circle'
               /> */}
               <span className='d-none d-md-block dropdown-toggle ps-2'>
-                K. Anderson
+                {user.username}
               </span>
             </a>
 
             <ul className='dropdown-menu dropdown-menu-end dropdown-menu-arrow profile'>
               <li className='dropdown-header'>
-                <h6>Kevin Anderson</h6>
+                <h6>{user.username}</h6>
                 {/* <span>Web Designer</span> */}
               </li>
               <li>
@@ -266,10 +278,13 @@ export default function Header() {
               </li>
 
               <li>
-                <a className='dropdown-item d-flex align-items-center' href='#'>
+                <button
+                  onClick={onSignOut}
+                  className='dropdown-item d-flex align-items-center'
+                >
                   <i className='bi bi-box-arrow-right'></i>
                   <span>Sign Out</span>
-                </a>
+                </button>
               </li>
             </ul>
           </li>

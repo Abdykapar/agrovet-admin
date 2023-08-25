@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { usersService } from '../services/user.service'
 import { useDispatch } from 'react-redux'
-import { setToken } from '../redux/authReducer'
+import { setToken, setUser as setUserToStore } from '../redux/authReducer'
 import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
@@ -15,6 +15,7 @@ export default function Login() {
       .login(user)
       .then(({ data }) => {
         dispatch(setToken(data.token))
+        dispatch(setUserToStore(data.user))
         navigate('/')
       })
       .catch((err) => console.log(err))
