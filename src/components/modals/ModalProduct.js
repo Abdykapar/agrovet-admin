@@ -73,7 +73,6 @@ export default function ModalProduct() {
       const keys = [
         'title',
         'price',
-        'image',
         'activeIngredient',
         'methodEntry',
         'chemicalClass',
@@ -91,6 +90,9 @@ export default function ModalProduct() {
       }
       fm.append('description', editorRef?.current?.targetElm.value)
       fm.append('category', selectedSubCategory.value)
+      for (const image of item?.images) {
+        fm.append('images', image, image.name)
+      }
 
       if (isEdit) await productsService.update(fm, item._id)
       else await productsService.create(fm)
