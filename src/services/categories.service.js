@@ -7,6 +7,10 @@ class CategoriesService {
     return instance(prefix)
   }
 
+  getById(id) {
+    return instance(`${prefix}/${id}`)
+  }
+
   getParents() {
     return instance(`${prefix}/parent`)
   }

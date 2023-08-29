@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { categoriesService } from '../services/categories.service'
 import ModalCategory from '../components/modals/ModalCategory'
 import AreYouSure from '../components/common/AreYouSure'
+import { useNavigate } from 'react-router-dom'
 
 export default function Category() {
   const [data, setData] = useState([])
   const [currentItem, setCurrentItem] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isOnDelete, setIsOnDelete] = useState(false)
+  const navigate = useNavigate()
 
   const fetchData = () => {
     categoriesService
@@ -28,8 +30,7 @@ export default function Category() {
   }, [])
 
   const onEdit = (item) => {
-    setCurrentItem(item)
-    setIsOpen(true)
+    navigate(`/category/create?id=${item._id}`)
   }
 
   const onCreate = () => {
@@ -38,13 +39,14 @@ export default function Category() {
   }
 
   const onDelete = (item) => {
-    setCurrentItem(item)
-    setIsOnDelete(true)
+    // setCurrentItem(item)
+    // setIsOnDelete(true)
+    deleteItem(item)
   }
 
-  const deleteItem = () => {
+  const deleteItem = (item) => {
     categoriesService
-      .delete(currentItem._id)
+      .delete(item._id)
       .then(() => {
         fetchData()
         setCurrentItem(null)
@@ -61,7 +63,10 @@ export default function Category() {
             <div className='card-body'>
               <div className='flex justify-between align-center'>
                 <h5 className='card-title'>Категория</h5>
-                <button className='btn btn-primary' onClick={onCreate}>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => navigate('/category/create')}
+                >
                   <i className='bi bi-plus-lg mr-10'></i>
                   <span className='inline-block'>Добавить категорию</span>
                 </button>
@@ -137,7 +142,7 @@ export default function Category() {
         </div>
       </section>
 
-      {isOpen && (
+      {/* {isOpen && (
         <ModalCategory
           isEdit={!!currentItem}
           data={currentItem}
@@ -146,12 +151,12 @@ export default function Category() {
           isOpen={isOpen}
           closeModal={() => setIsOpen(false)}
         />
-      )}
-      <AreYouSure
+      )} */}
+      {/* <AreYouSure
         isOpen={isOnDelete}
         onClose={() => setIsOnDelete(false)}
         onYes={deleteItem}
-      />
+      /> */}
     </main>
   )
 }

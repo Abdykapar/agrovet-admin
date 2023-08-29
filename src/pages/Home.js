@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { productsService } from '../services/products.service'
 import AreYouSure from '../components/common/AreYouSure'
 import ModalProduct from '../components/modals/ModalProduct'
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const [products, setProducts] = useState([])
   const [currentItem, setCurrentItem] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isOnDelete, setIsOnDelete] = useState(false)
+
+  const navigate = useNavigate()
 
   const fetchData = () => {
     productsService
@@ -23,8 +26,7 @@ export default function Home() {
   }, [])
 
   const onEdit = (item) => {
-    setCurrentItem(item)
-    setIsOpen(true)
+    navigate(`/product/create?id=${item._id}`)
   }
 
   const onCreate = () => {
@@ -33,13 +35,14 @@ export default function Home() {
   }
 
   const onDelete = (item) => {
-    setCurrentItem(item)
-    setIsOnDelete(true)
+    // setCurrentItem(item)
+    // setIsOnDelete(true)
+    deleteItem(item)
   }
 
-  const deleteItem = () => {
+  const deleteItem = (item) => {
     productsService
-      .delete(currentItem._id)
+      .delete(item._id)
       .then(() => {
         setIsOnDelete(false)
         setCurrentItem(null)
@@ -56,9 +59,12 @@ export default function Home() {
             <div className='card-body'>
               <div className='flex justify-between align-center'>
                 <h5 className='card-title'>Товары</h5>
-                <button className='btn btn-primary' onClick={onCreate}>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => navigate('/product/create')}
+                >
                   <i className='bi bi-plus-lg mr-10'></i>
-                  <span className='inline-block'>Добавить категорию</span>
+                  <span className='inline-block'>Добавить товар</span>
                 </button>
               </div>
 
@@ -106,22 +112,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {isOpen && (
-        <ModalProduct
-          isOpen={isOpen}
-          isEdit={!!currentItem}
-          fetchData={fetchData}
-          data={currentItem}
-          closeModal={() => setIsOpen(false)}
-        />
-      )}
-
-      <AreYouSure
-        isOpen={isOnDelete}
-        onClose={() => setIsOnDelete(false)}
-        onYes={deleteItem}
-      />
     </main>
   )
 }

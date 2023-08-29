@@ -7,6 +7,10 @@ class ProductsService {
     return instance(prefix)
   }
 
+  getById(id) {
+    return instance(`${prefix}/${id}`)
+  }
+
   create(data) {
     return instance.post(prefix, data)
   }

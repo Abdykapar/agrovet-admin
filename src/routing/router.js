@@ -4,6 +4,8 @@ import Home from '../pages/Home'
 import Category from '../pages/Category'
 import Login from '../pages/Login'
 import ProtectRoute from './ProtectRoute'
+import ModalCategory from '../components/modals/ModalCategory'
+import ModalProduct from '../components/modals/ModalProduct'
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +24,26 @@ export const router = createBrowserRouter([
       <ProtectRoute>
         <App>
           <Category />
+        </App>
+      </ProtectRoute>
+    ),
+  },
+  {
+    path: '/category/create',
+    element: (
+      <ProtectRoute>
+        <App>
+          <ModalCategory />
+        </App>
+      </ProtectRoute>
+    ),
+  },
+  {
+    path: '/product/create',
+    element: (
+      <ProtectRoute>
+        <App>
+          <ModalProduct />
         </App>
       </ProtectRoute>
     ),
