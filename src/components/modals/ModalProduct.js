@@ -4,6 +4,7 @@ import TinyEditor from '../form/TinyEditor'
 import { productsService } from '../../services/products.service'
 import Select from 'react-select'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import Loader from '../form/Loader'
 
 export default function ModalProduct() {
   const [item, setItem] = useState({})
@@ -12,6 +13,7 @@ export default function ModalProduct() {
   const [selectedSubCategory, setSelectedSubCategory] = useState(null)
   const [parentCategories, setParentCategories] = useState([])
   const [isEdit, setIsEdit] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const editorRef = useRef(null)
 
   const navigate = useNavigate()
@@ -83,6 +85,7 @@ export default function ModalProduct() {
         'turn',
       ]
       const fm = new FormData()
+      setIsLoading(true)
 
       for (let [key, value] of Object.entries(item)) {
         if (key === 'file') fm.append('image', value)
@@ -90,15 +93,18 @@ export default function ModalProduct() {
       }
       fm.append('description', editorRef?.current?.targetElm.value)
       fm.append('category', selectedSubCategory.value)
-      for (const image of item?.images) {
-        fm.append('images', image, image.name)
-      }
+      if (Array.isArray(item.images))
+        for (const image of item.images) {
+          fm.append('images', image, image.name)
+        }
 
       if (isEdit) await productsService.update(fm, item._id)
       else await productsService.create(fm)
       navigate('/')
     } catch (err) {
       console.log(err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -439,6 +445,7 @@ export default function ModalProduct() {
                     </button>
                   </div>
                 </form>
+                {isLoading && <Loader />}
               </div>
             </div>
           </div>

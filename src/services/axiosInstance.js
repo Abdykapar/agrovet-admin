@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { store } from '../redux/store'
+import { setToken, setUser } from '../redux/authReducer'
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_API,
@@ -14,6 +15,12 @@ instance.interceptors.response.use(
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+    const { message } = error.response.data
+    if (message === 'jwt expired') {
+      store.dispatch(setToken(null))
+      store.dispatch(setUser(null))
+      window.location.href = '/login'
+    }
     return Promise.reject(error)
   }
 )
