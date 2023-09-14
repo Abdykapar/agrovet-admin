@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { categoriesService } from '../../services/categories.service'
 import TinyEditor from '../form/TinyEditor'
 import { productsService } from '../../services/products.service'
@@ -21,15 +21,12 @@ export default function ModalProduct() {
 
   useEffect(() => {
     const id = searchParams.get('id')
-    console.log('id', id)
     if (id) {
       productsService
         .getById(id)
         .then(({ data }) => {
           setItem({
             ...data,
-            category: data.category?._id,
-            parent: data.category?.parent,
           })
           getCategories(data)
           setIsEdit(true)
@@ -115,13 +112,13 @@ export default function ModalProduct() {
     createNew()
   }
 
-  const getCategoryTitle = (id) => {
-    const parent = parentCategories.find((i) => i._id === id)
-    if (parent) return parent.title
-    const subCategory = categories.find((i) => i._id === id)
-    if (subCategory) return subCategory.title
+  const getCategoryTitle = useMemo(() => {
+    const subCategory = parentCategories.find(
+      (i) => i.value === selectedCategory?.value
+    )
+    if (subCategory) return subCategory.label
     return ''
-  }
+  }, [selectedCategory])
 
   const subCategories = useMemo(() => {
     return categories.filter((i) => i.parent?._id === selectedCategory?.value)
@@ -219,7 +216,7 @@ export default function ModalProduct() {
                       />
                     </div>
                   </div>
-                  {getCategoryTitle(item.parent) === 'Агрария' && (
+                  {getCategoryTitle === 'Агрария' && (
                     <>
                       <div className='row mb-3'>
                         <label
@@ -319,7 +316,7 @@ export default function ModalProduct() {
                       </div>
                     </>
                   )}
-                  {getCategoryTitle(item.parent) === 'Ветеринария' && (
+                  {getCategoryTitle === 'Ветеринария' && (
                     <>
                       <div className='row mb-3'>
                         <label
@@ -359,8 +356,8 @@ export default function ModalProduct() {
                       </div>
                     </>
                   )}
-                  {getCategoryTitle(item.parent) === 'Удобрения' &&
-                    getCategoryTitle(item.parent) === 'Биостимуляторы' && (
+                  {getCategoryTitle === 'Удобрения' &&
+                    getCategoryTitle === 'Биостимуляторы' && (
                       <>
                         <div className='row mb-3'>
                           <label
